@@ -12,6 +12,7 @@ class MixUpModule(BaseModule):
 
     Read the docs:
         https://github.com/mosaicml/composer/tree/dev/composer/algorithms/mixup
+        https://crazyoscarchang.github.io/2020/09/27/revisiting-mixup/
     """
 
     def __init__(
