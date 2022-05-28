@@ -1,0 +1,12 @@
+_target_: src.models.mixup_module.MixUpModule
+lr: 0.001
+weight_decay: 0.0005
+alpha: 1.0
+
+net:
+  _target_: src.models.components.simple_dense_net.SimpleDenseNet
+  input_size: 3072
+  lin1_size: 1536
+  lin2_size: 768
+  lin3_size: 384
+  output_size: 10

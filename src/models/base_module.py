@@ -8,8 +8,8 @@ from torchmetrics.classification.accuracy import Accuracy
 from src.models.components.simple_dense_net import SimpleDenseNet
 
 
-class MNISTLitModule(LightningModule):
-    """Example of LightningModule for MNIST classification.
+class BaseModule(LightningModule):
+    """Example of LightningModule for classification.
 
     A LightningModule organizes your PyTorch code into 5 sections:
         - Computations (init).

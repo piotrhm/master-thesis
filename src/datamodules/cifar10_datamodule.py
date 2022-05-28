@@ -4,21 +4,21 @@ from typing import Optional, Tuple
 import torch
 
 from torch.utils.data import ConcatDataset, random_split
-from torchvision.datasets import MNIST
+from torchvision.datasets import CIFAR10
 from torchvision.transforms import transforms
 
 from src.datamodules.datamodule import DataModule
 
 
-class MNISTDataModule(DataModule, ABC):
+class CIFAR10DataModule(DataModule, ABC):
     """
-    Example of LightningDataModule for MNIST dataset.
+    Example of LightningDataModule for CIFAR10 dataset.
     """
 
     def __init__(
         self,
         data_dir: str = "data/",
-        train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
+        train_val_test_split: Tuple[int, int, int] = (45_000, 5_000, 10_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -35,8 +35,8 @@ class MNISTDataModule(DataModule, ABC):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.transforms = transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+        self.transform = transforms.Compose(
+            [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
         )
 
     @property
@@ -49,8 +49,8 @@ class MNISTDataModule(DataModule, ABC):
         This method is called only from a single GPU.
         Do not use it to assign state (self.x = y).
         """
-        MNIST(self.hparams.data_dir, train=True, download=True)
-        MNIST(self.hparams.data_dir, train=False, download=True)
+        CIFAR10(self.hparams.data_dir, train=True, download=True)
+        CIFAR10(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
@@ -62,8 +62,8 @@ class MNISTDataModule(DataModule, ABC):
 
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
-            trainset = MNIST(self.hparams.data_dir, train=True, transform=self.transforms)
-            testset = MNIST(self.hparams.data_dir, train=False, transform=self.transforms)
+            trainset = CIFAR10(self.hparams.data_dir, train=True, transform=self.transform)
+            testset = CIFAR10(self.hparams.data_dir, train=False, transform=self.transform)
             dataset = ConcatDataset(datasets=[trainset, testset])
             self.data_train, self.data_val, self.data_test = random_split(
                 dataset=dataset,

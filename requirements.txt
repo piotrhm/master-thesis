@@ -10,7 +10,7 @@ hydra-colorlog>=1.1.0
 hydra-optuna-sweeper>=1.1.0
 
 # --------- loggers --------- #
-# wandb
+wandb
 # neptune-client
 # mlflow
 # comet-ml
@@ -29,3 +29,6 @@ rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # for running bash commands in some tests
 pudb            # debugger
+mosaicml
+omegaconf~=2.1.1
+packaging~=21.3

@@ -1,6 +1,7 @@
-_target_: src.models.base_module.BaseModule
+_target_: src.models.mixup_module.MixUpModule
 lr: 0.001
 weight_decay: 0.0005
+alpha: 1.0
 
 net:
   _target_: src.models.components.simple_dense_net.SimpleDenseNet

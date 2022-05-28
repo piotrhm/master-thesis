@@ -610,7 +610,7 @@ hydra:
 
 ### Workflow
 
-1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
+1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/base_module.py) for example)
 2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
 4. Run training with chosen experiment config: `python train.py experiment=experiment_name`
@@ -670,7 +670,7 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 You can also write your own logger.
 
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_module.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/base_module.py).
 
 <br>
 
@@ -763,52 +763,52 @@ The following code is an example of loading model from checkpoint and running pr
 from PIL import Image
 from torchvision import transforms
 
-from src.models.mnist_module import MNISTLitModule
+from src.models.base_module import BaseModule
 
 
 def predict():
-    """Example of inference with trained model.
-    It loads trained image classification model from checkpoint.
-    Then it loads example image and predicts its label.
-    """
+   """Example of inference with trained model.
+   It loads trained image classification model from checkpoint.
+   Then it loads example image and predicts its label.
+   """
 
-    # ckpt can be also a URL!
-    CKPT_PATH = "last.ckpt"
+   # ckpt can be also a URL!
+   CKPT_PATH = "last.ckpt"
 
-    # load model from checkpoint
-    # model __init__ parameters will be loaded from ckpt automatically
-    # you can also pass some parameter explicitly to override it
-    trained_model = MNISTLitModule.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+   # load model from checkpoint
+   # model __init__ parameters will be loaded from ckpt automatically
+   # you can also pass some parameter explicitly to override it
+   trained_model = BaseModule.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
-    # print model hyperparameters
-    print(trained_model.hparams)
+   # print model hyperparameters
+   print(trained_model.hparams)
 
-    # switch to evaluation mode
-    trained_model.eval()
-    trained_model.freeze()
+   # switch to evaluation mode
+   trained_model.eval()
+   trained_model.freeze()
 
-    # load data
-    img = Image.open("data/example_img.png").convert("L")  # convert to black and white
-    # img = Image.open("data/example_img.png").convert("RGB")  # convert to RGB
+   # load data
+   img = Image.open("data/example_img.png").convert("L")  # convert to black and white
+   # img = Image.open("data/example_img.png").convert("RGB")  # convert to RGB
 
-    # preprocess
-    mnist_transforms = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Resize((28, 28)),
-            transforms.Normalize((0.1307,), (0.3081,)),
-        ]
-    )
-    img = mnist_transforms(img)
-    img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
+   # preprocess
+   mnist_transforms = transforms.Compose(
+      [
+         transforms.ToTensor(),
+         transforms.Resize((28, 28)),
+         transforms.Normalize((0.1307,), (0.3081,)),
+      ]
+   )
+   img = mnist_transforms(img)
+   img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
-    # inference
-    output = trained_model(img)
-    print(output)
+   # inference
+   output = trained_model(img)
+   print(output)
 
 
 if __name__ == "__main__":
-    predict()
+   predict()
 
 ```
 
