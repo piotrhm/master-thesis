@@ -5,3 +5,4 @@ weight_decay: 0.0001
 net:
   _target_: torchvision.models.resnet18
 
+# ref for hp: https://github.com/facebookresearch/mixup-cifar10/blob/main/train.py
