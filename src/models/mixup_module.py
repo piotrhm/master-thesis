@@ -33,8 +33,6 @@ class MixUpModule(BaseModule):
         x, y = batch
         x, y_perm, mixing = cf.mixup_batch(x, y, alpha=self.hparams.alpha)
 
-        print(y)
-
         if self.hparams.interpolate_loss:
             y_hat = self.forward(x)
             loss = (1 - mixing) * self.criterion(y_hat, y) + mixing * self.criterion(y_hat, y_perm)
