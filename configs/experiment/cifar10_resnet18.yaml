@@ -1,8 +1,3 @@
-# @package _global_
-
-# to execute this experiment run:
-# python train.py experiment=example
-
 defaults:
   - override /datamodule: cifar10.yaml
   - override /model: resnet18.yaml
@@ -19,11 +14,11 @@ defaults:
 seed: 12345
 
 trainer:
-  min_epochs: 10
-  max_epochs: 10
+  min_epochs: 200
+  max_epochs: 200
 
 datamodule:
-  batch_size: 64
+  batch_size: 128
 
 logger:
   wandb:

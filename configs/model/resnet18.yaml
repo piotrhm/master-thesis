@@ -1,6 +1,6 @@
 _target_: src.models.base_module.BaseModule
-lr: 0.001
-weight_decay: 0.0005
+lr: 0.1
+weight_decay: 0.0001
 
 net:
   _target_: torchvision.models.resnet18
