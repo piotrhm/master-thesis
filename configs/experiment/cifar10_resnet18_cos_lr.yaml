@@ -1,0 +1,39 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: cifar10.yaml
+  - override /model: resnet18.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: default.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+# name of the run determines folder name in logs
+# name: "simple_dense_net"
+
+seed: 12345
+
+trainer:
+  min_epochs: 200
+  max_epochs: 250
+
+datamodule:
+  batch_size: 128
+
+model:
+  optimizer:
+    lr: 0.1
+    weight_decay: 0.0005
+
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+    T_max: 200
+
+logger:
+  wandb:
+    tags: ["resnet18", "${name}", ]
+    project: "resnet18-tests"
+
+
