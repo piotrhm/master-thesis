@@ -1,6 +1,7 @@
 from typing import Any, List
 
 import torch
+import hydra
 from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
@@ -24,17 +25,16 @@ class BaseModule(LightningModule):
 
     def __init__(
         self,
-        net: torch.nn.Module,
-        lr: float = 0.001,
-        weight_decay: float = 0.0005,
+        net: Any,
+        optimizer: Any,
+        lr_scheduler: Any,
+        monitor: Any,
     ):
         super().__init__()
-
-        # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.net = net
+        # model
+        self.net = hydra.utils.instantiate(net)
 
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -116,6 +116,15 @@ class BaseModule(LightningModule):
         See examples here:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
-        return torch.optim.Adam(
-            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
-        )
+        config_opt = self.hparams.optimizer
+        config_opt.pop('_partial_')
+        opt = hydra.utils.instantiate(config_opt, params=self.parameters())
+
+        if "lr_scheduler" not in self.hparams:
+            return [opt]
+        scheduler = hydra.utils.instantiate(self.hparams.lr_scheduler, optimizer=opt)
+
+        if "monitor" in self.hparams:
+            scheduler = {'scheduler': scheduler, 'monitor': self.hparams.monitor.metric_to_track}
+
+        return [opt], [scheduler]
