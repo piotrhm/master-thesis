@@ -19,6 +19,16 @@ trainer:
 datamodule:
   batch_size: 128
 
+model:
+  optimizer:
+    lr: 0.1
+    weight_decay: 0.0001
+
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+    patience: 24
+    min_lr: 0.00001
+
 logger:
   wandb:
     tags: ["resnet18", "${name}", "mixup"]

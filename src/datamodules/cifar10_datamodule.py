@@ -35,7 +35,14 @@ class CIFAR10DataModule(DataModule, ABC):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.transform = transforms.Compose([
+        self.transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                 (0.2023, 0.1994, 0.2010)),
+        ])
+        self.transform_train = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize((0.4914, 0.4822, 0.4465),
                                  (0.2023, 0.1994, 0.2010)),
@@ -64,8 +71,8 @@ class CIFAR10DataModule(DataModule, ABC):
 
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
-            trainset = CIFAR10(self.hparams.data_dir, train=True, transform=self.transform)
-            testset = CIFAR10(self.hparams.data_dir, train=False, transform=self.transform)
+            trainset = CIFAR10(self.hparams.data_dir, train=True, transform=self.transform_train)
+            testset = CIFAR10(self.hparams.data_dir, train=False, transform=self.transform_test)
             dataset = ConcatDataset(datasets=[trainset, testset])
             self.data_train, self.data_val, self.data_test = random_split(
                 dataset=dataset,
