@@ -1,0 +1,41 @@
+torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr, epochs=epochs, 
+                                                steps_per_epoch=len(train_loader))
+
+# @package _global_
+
+defaults:
+  - override /datamodule: cifar10.yaml
+  - override /model: resnet18.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: default.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+# name of the run determines folder name in logs
+# name: "simple_dense_net"
+
+seed: 12345
+
+trainer:
+  min_epochs: 250
+  max_epochs: 250
+
+datamodule:
+  batch_size: 128
+
+model:
+  optimizer:
+    lr: 0.01
+
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.OneCycleLR
+    max_lr: 0.01
+    epochs: 200
+    steps_per_epoch: 391
+
+logger:
+  wandb:
+    tags: ["resnet18", "${name}", ]
+    project: "resnet18-tests"
