@@ -1,10 +1,9 @@
-from typing import Any, List
+from typing import Any
 
 import torch
 import composer.functional as cf
 
 from src.models.base_module import BaseModule
-from src.models.components.simple_dense_net import SimpleDenseNet
 
 
 class MixUpModule(BaseModule):
@@ -21,6 +20,8 @@ class MixUpModule(BaseModule):
         optimizer: Any,
         lr_scheduler: Any,
         monitor: Any,
+        interpolate_loss=True,
+        alpha=0.2,
     ):
         super().__init__(
             net=net,
