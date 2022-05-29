@@ -1,6 +1,4 @@
 _target_: src.models.mixup_module.MixUpModule
-lr: 0.001
-weight_decay: 0.0005
 alpha: 0.1
 interpolate_loss: True
 
@@ -11,3 +9,15 @@ net:
   lin2_size: 256
   lin3_size: 256
   output_size: 10
+
+optimizer:
+  _partial_: true
+  _target_: torch.optim.Adam
+  lr: 0.001
+  weight_decay: 0.0005
+
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+
+monitor:
+  metric_to_track: 'val/acc'

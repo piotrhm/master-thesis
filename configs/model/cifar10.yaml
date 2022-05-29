@@ -1,6 +1,4 @@
 _target_: src.models.base_module.BaseModule
-lr: 0.001
-weight_decay: 0.0005
 
 net:
   _target_: src.models.components.simple_dense_net.SimpleDenseNet
@@ -9,3 +7,15 @@ net:
   lin2_size: 768
   lin3_size: 384
   output_size: 10
+
+optimizer:
+  _partial_: true
+  _target_: torch.optim.Adam
+  lr: 0.001
+  weight_decay: 0.0005
+
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+
+monitor:
+  metric_to_track: 'val/acc'

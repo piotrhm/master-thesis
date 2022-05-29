@@ -17,16 +17,16 @@ class MixUpModule(BaseModule):
 
     def __init__(
         self,
-        net: torch.nn.Module,
-        lr: float = 0.001,
-        weight_decay: float = 0.0005,
-        alpha=0.2,
-        interpolate_loss=True,
+        net: Any,
+        optimizer: Any,
+        lr_scheduler: Any,
+        monitor: Any,
     ):
         super().__init__(
             net=net,
-            lr=lr,
-            weight_decay=weight_decay
+            optimizer=optimizer,
+            lr_scheduler=lr_scheduler,
+            monitor=monitor
         )
         self.save_hyperparameters(logger=False)
 
