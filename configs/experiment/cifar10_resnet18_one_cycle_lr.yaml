@@ -1,6 +1,3 @@
-torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr, epochs=epochs, 
-                                                steps_per_epoch=len(train_loader))
-
 # @package _global_
 
 defaults:
