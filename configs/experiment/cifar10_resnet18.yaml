@@ -17,7 +17,8 @@ seed: 12345
 
 trainer:
   min_epochs: 200
-  max_epochs: 200
+  max_epochs: 250
+  gradient_clip_val: 0.5
 
 datamodule:
   batch_size: 128
@@ -25,12 +26,12 @@ datamodule:
 model:
   optimizer:
     lr: 0.1
-    weight_decay: 0.0005
+    weight_decay: 0.0001
 
   lr_scheduler:
     _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
     patience: 15
-    min_lr: 0.000001
+    min_lr: 0
 
 logger:
   wandb:

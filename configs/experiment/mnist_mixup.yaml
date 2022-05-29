@@ -23,7 +23,6 @@ trainer:
   max_epochs: 25
 
 model:
-  lr: 0.002
   net:
     lin1_size: 128
     lin2_size: 256
