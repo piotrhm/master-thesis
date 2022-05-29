@@ -11,6 +11,7 @@ optimizer:
 
 lr_scheduler:
   _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  patience: 20
 
 monitor:
   metric_to_track: 'val/acc'
