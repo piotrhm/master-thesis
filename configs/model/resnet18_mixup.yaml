@@ -1,0 +1,19 @@
+_target_: src.models.mixup_module.MixUpModule
+alpha: 1.0
+
+net:
+  _target_: torchvision.models.resnet18
+
+optimizer:
+  _partial_: true
+  _target_: torch.optim.Adam
+  lr: 0.1
+  weight_decay: 0.0001
+
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+
+monitor:
+  metric_to_track: 'val/acc'
+
+# ref for hp: https://github.com/facebookresearch/mixup-cifar10/blob/main/train.py
