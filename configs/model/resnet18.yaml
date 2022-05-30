@@ -14,5 +14,3 @@ lr_scheduler:
 
 monitor:
   metric_to_track: 'val/acc'
-
-# ref for hp: https://github.com/facebookresearch/mixup-cifar10/blob/main/train.py

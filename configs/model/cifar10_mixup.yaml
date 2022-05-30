@@ -1,5 +1,6 @@
 _target_: src.models.mixup_module.MixUpModule
 alpha: 1.0
+interpolate_loss: True
 
 net:
   _target_: src.models.components.simple_dense_net.SimpleDenseNet

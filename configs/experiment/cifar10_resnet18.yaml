@@ -7,12 +7,6 @@ defaults:
   - override /logger: null
   - override /trainer: default.yaml
 
-# all parameters below will be merged with parameters from default configurations set above
-# this allows you to overwrite only specified parameters
-
-# name of the run determines folder name in logs
-# name: "simple_dense_net"
-
 seed: 12345
 
 trainer:

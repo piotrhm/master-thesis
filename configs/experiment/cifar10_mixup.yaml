@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py experiment=example
+# python train.py experiment=cifar10_mixup
 
 defaults:
   - override /datamodule: cifar10.yaml
@@ -10,10 +10,6 @@ defaults:
   - override /logger: null
   - override /trainer: default.yaml
 
-# all parameters below will be merged with parameters from default configurations set above
-# this allows you to overwrite only specified parameters
-
-# name of the run determines folder name in logs
 name: "simple_dense_net"
 
 seed: 12345
