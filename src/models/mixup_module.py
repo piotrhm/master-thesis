@@ -31,7 +31,7 @@ class MixUpModule(BaseModule):
         )
         self.save_hyperparameters(logger=False)
 
-    def step(self, batch: Any):
+    def step_mixup(self, batch: Any):
         x, y = batch
         x, y_perm, mixing = cf.mixup_batch(x, y, alpha=self.hparams.alpha)
 
@@ -45,5 +45,13 @@ class MixUpModule(BaseModule):
 
         preds = torch.argmax(y_hat, dim=1)
         return loss, preds, y
+
+    def training_step(self, batch: Any, batch_idx: int):
+        loss, preds, targets = self.step_mixup(batch)
+        acc = self.train_acc(preds, targets)
+        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+        self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+        return {"loss": loss, "preds": preds, "targets": targets}
 
 
