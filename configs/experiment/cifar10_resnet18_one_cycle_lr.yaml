@@ -23,7 +23,7 @@ model:
   lr_scheduler:
     _target_: torch.optim.lr_scheduler.OneCycleLR
     max_lr: 0.01
-    epochs: 200
+    epochs: 250
     steps_per_epoch: 391
 
 logger:
