@@ -2,7 +2,7 @@ _target_: src.models.mixup_module.MixUpModule
 alpha: 1.0
 
 net:
-  _target_: src.models.components.resnet18_cifar.ResNet
+  _target_: src.models.components.resnet.ResNet
   layers: [2, 2, 2]
   num_classes: 10
 
