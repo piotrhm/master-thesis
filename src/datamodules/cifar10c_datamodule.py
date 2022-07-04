@@ -1,18 +1,21 @@
 from abc import ABC
 from typing import Optional, Tuple
 
+import os
 import torch
 
-from torch.utils.data import ConcatDataset, random_split
+from torch.utils.data import ConcatDataset, random_split, DataLoader
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import transforms
 
+from src.datasets.cifar10c import CIFAR10C, extract_subset
 from src.datamodules.datamodule import DataModule
+from src.utils.helpers import load_txt
 
 
-class CIFAR10DataModule(DataModule, ABC):
+class CIFAR10CDataModule(DataModule, ABC):
     """
-    Example of LightningDataModule for CIFAR10 dataset.
+    LightningDataModule for CIFAR10 dataset with corruptions.
     """
 
     def __init__(
@@ -48,6 +51,8 @@ class CIFAR10DataModule(DataModule, ABC):
                                  (0.2470, 0.2435, 0.2616)),
         ])
 
+        self.cdata = {}
+
     @property
     def num_classes(self) -> int:
         return 10
@@ -81,3 +86,32 @@ class CIFAR10DataModule(DataModule, ABC):
                 lengths=self.hparams.train_val_test_split,
                 generator=torch.Generator().manual_seed(42),
             )
+
+        cdata_path = os.path.join(self.hparams.data_dir, 'cifar-10-c')
+        corruptions = load_txt(os.path.join(cdata_path, 'corruptions.txt'))
+        for cname in corruptions:
+            dataset = CIFAR10C(
+                cdata_path,
+                cname,
+                transform=self.transform_test,
+                target_transform=None
+            )
+            self.cdata[cname] = dataset
+
+    def ctest_dataloader(self, cname):
+        return DataLoader(
+            dataset=self.cdata[cname],
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+        )
+
+    def ctest_subset_dataloader(self, cname, num_subset=100, random_subset=True):
+        return DataLoader(
+            dataset=extract_subset(self.cdata[cname], num_subset, random_subset),
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+        )

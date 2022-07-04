@@ -1,6 +1,12 @@
-from pytorch_lightning import Callback, Trainer, LightningModule
+import os
 from typing import Any, Optional, Dict
+
 import torch
+
+from pytorch_lightning import Callback, Trainer, LightningModule
+from torchmetrics.classification.accuracy import Accuracy
+
+from src.utils.helpers import load_txt
 
 
 def calc_l2_norm(trainer, x, y) -> float:
@@ -40,3 +46,19 @@ class TrackCleanGradients(Callback):
             norm = calc_l2_norm(trainer, x, y)
             pl_module.log("val/g_norm", norm, on_step=False, on_epoch=True, prog_bar=True)
         trainer.optimizers[0].zero_grad()
+
+
+class TrackRobustness(Callback):
+    def on_validation_epoch_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
+        data_dir = trainer.datamodule.hparams.data_dir
+
+        cdata_path = os.path.join(data_dir, 'cifar-10-c')
+        corruptions = load_txt(os.path.join(cdata_path, 'corruptions.txt'))
+        for cname in corruptions:
+            accuracy = Accuracy()
+            cdata = trainer.datamodule.ctest_subset_dataloader(cname)
+            for batch in cdata:
+                loss, preds, targets = pl_module.step(batch)
+                acc = accuracy(preds, targets)
+                pl_module.log("cdata/" + cname + "/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+                pl_module.log("cdata/" + cname + "/acc", acc, on_step=False, on_epoch=True, prog_bar=True)

@@ -6,8 +6,6 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
-from src.models.components.simple_dense_net import SimpleDenseNet
-
 
 class BaseModule(LightningModule):
     """Example of LightningModule for classification.
