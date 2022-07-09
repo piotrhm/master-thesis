@@ -26,7 +26,7 @@ model:
     epochs: 250
     steps_per_epoch: 391
 
-  logger:
-    wandb:
-      tags: [ "resnet18", "${name}", ]
-      project: "resnet18-tests"
+logger:
+  wandb:
+    tags: [ "resnet18", "${name}", ]
+    project: "resnet18-tests"
