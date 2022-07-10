@@ -28,6 +28,7 @@ cd master-thesis
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8
 conda activate myenv
+# eg. source activate master-thesis
 
 # install pytorch according to instructions
 # https://pytorch.org/get-started/
