@@ -21,12 +21,11 @@ model:
   interpolate_loss: True
 
   optimizer:
-    lr: 0.01
+    lr: 0.1
 
   lr_scheduler:
-    _target_: torch.optim.lr_scheduler.StepLR
-    step_size: 35
-    gamma: 0.3
+    _target_: torch.optim.lr_scheduler.MultiStepLR
+    milestones: [100, 150]
 
 logger:
   wandb:
