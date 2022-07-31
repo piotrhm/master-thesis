@@ -1,0 +1,8 @@
+_target_: src.datamodules.lightning_transformers_text_classification_datamodule.TextClassificationDataModuleWrapper
+
+
+tokenizer_pretrained_model_name_or_path: "distilbert-base-uncased"
+
+batch_size: 1
+dataset_name: "emotion"
+max_length: 512

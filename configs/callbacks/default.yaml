@@ -26,9 +26,3 @@ rich_progress_bar:
 monitor:
   _target_: pytorch_lightning.callbacks.lr_monitor.LearningRateMonitor
   logging_interval: 'step'
-
-track_gradients:
-  _target_: src.callbacks.default.TrackCleanGradients
-
-track_robustness:
-  _target_: src.callbacks.default.TrackRobustness

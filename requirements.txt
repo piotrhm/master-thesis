@@ -10,7 +10,7 @@ hydra-colorlog>=1.1.0
 hydra-optuna-sweeper>=1.1.0
 
 # --------- loggers --------- #
-wandb
+wandb~=0.12.16
 # neptune-client
 # mlflow
 # comet-ml
@@ -24,11 +24,19 @@ flake8          # code analysis
 nbstripout      # remove output from jupyter notebooks
 
 # --------- others --------- #
-python-dotenv   # loading env variables from .env file
-rich            # beautiful text formatting in terminal
-pytest          # tests
-sh              # for running bash commands in some tests
+python-dotenv~=0.19.2
+rich~=12.0.1
+pytest~=7.1.1
+sh~=1.14.2
 pudb            # debugger
 mosaicml
 omegaconf~=2.1.1
 packaging~=21.3
+
+transformers~=4.21.0
+numpy~=1.21.5
+Pillow~=9.0.1
+matplotlib~=3.5.2
+seaborn~=0.11.2
+sklearn~=0.0
+scikit-learn~=1.0.2

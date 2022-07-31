@@ -1,0 +1,33 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: emontion_text_classification.yaml
+  - override /model: bert_text_classification.yaml
+  - override /callbacks: wandb_transformer.yaml
+  - override /logger: wandb.yaml
+  - override /trainer: default.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+# name of the run determines folder name in logs
+name: "bert_text_classification"
+
+seed: 12345
+
+trainer:
+  min_epochs: 10
+  max_epochs: 25
+  limit_train_batches: 0.1
+
+
+model:
+  num_labels: 6
+
+datamodule:
+  batch_size: 1
+
+logger:
+  project: "bert-nlp"
+  wandb:
+    tags: ["bert", "${name}"]
