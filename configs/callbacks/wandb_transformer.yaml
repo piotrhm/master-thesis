@@ -1,19 +1,11 @@
 defaults:
   - default.yaml
 
-watch_model:
-  _target_: src.callbacks.wandb_callbacks.WatchModel
-  log: "all"
-  log_freq: 100
+model_checkpoint:
+  monitor: "val_accuracy" # name of the logged metric which determines when model is improving
 
-#upload_code_as_artifact:
-#  _target_: src.callbacks.wandb_callbacks.UploadCodeAsArtifact
-#  code_dir: ${original_work_dir}/src
-#
-#upload_ckpts_as_artifact:
-#  _target_: src.callbacks.wandb_callbacks.UploadCheckpointsAsArtifact
-#  ckpt_dir: "checkpoints/"
-#  upload_best_only: True
+early_stopping:
+  monitor: "val_accuracy" # name of the logged metric which determines when model is improving
 
 track_gradients:
   _target_: src.callbacks.default.TrackCleanGradientsTransformer

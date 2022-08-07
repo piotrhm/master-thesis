@@ -1,4 +1,4 @@
-_target_: src.models.lightning_transformers_module.TextClassificationTransformerWrapper
+_target_: src.models.manifold_mixup.TextClassificationTransformerWrapperMixup
 
 optimizer:
   _partial_: true

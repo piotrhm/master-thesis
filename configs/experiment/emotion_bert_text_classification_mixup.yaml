@@ -2,7 +2,7 @@
 
 defaults:
   - override /datamodule: emontion_text_classification.yaml
-  - override /model: bert_text_classification.yaml
+  - override /model: bert_text_classification_mixup.yaml
   - override /callbacks: wandb_transformer.yaml
   - override /logger: null
   - override /trainer: default.yaml
@@ -24,8 +24,6 @@ trainer:
 
 model:
   num_labels: 6
-  optimizer:
-    lr: 8e-5
 
 datamodule:
   batch_size: 16
