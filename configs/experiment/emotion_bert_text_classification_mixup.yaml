@@ -23,7 +23,11 @@ trainer:
 
 
 model:
+  alpha: 0.2
+  interpolate_loss: True
   num_labels: 6
+  optimizer:
+    lr: 8e-5
 
 datamodule:
   batch_size: 16
@@ -32,3 +36,4 @@ logger:
   project: "bert-nlp"
   wandb:
     tags: ["bert", "${name}"]
+    project: "bert-nlp"
