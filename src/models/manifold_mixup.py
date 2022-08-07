@@ -28,19 +28,20 @@ class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
 
 
     def training_step(self, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> torch.Tensor:
+        batch_new = batch.copy()
         if self.pretrained_model_name_or_path == "distilbert-base-uncased":
-            batch['inputs_embeds'] = self.model.distilbert.embeddings(batch['input_ids'])
-            batch.pop('input_ids', None)
+            batch_new['inputs_embeds'] = self.model.distilbert.embeddings(batch_new['input_ids'])
+            batch_new.pop('input_ids', None)
         else:
             raise NotImplementedError("training step is not implemented for model")
 
-        x, y_perm, mixing = cf.mixup_batch(batch['inputs_embeds'], batch['labels'], alpha=self.hparams.alpha)
-        batch.pop('inputs_embeds', None)
-        batch['inputs_embeds'] = x
+        x, y_perm, mixing = cf.mixup_batch(batch_new['inputs_embeds'], batch_new['labels'], alpha=self.hparams.alpha)
+        batch_new.pop('inputs_embeds', None)
+        batch_new['inputs_embeds'] = x
 
         assert self.model.config.problem_type == self.model.config.problem_type
 
-        outputs = self.model(**batch)
+        outputs = self.model(**batch_new)
         y_hat = outputs[1]
         loss = (1 - mixing) * self.criterion(y_hat.view(-1, self.model.num_labels), batch['labels'].view(-1)) +\
                mixing * self.criterion(y_hat.view(-1, self.model.num_labels), y_perm.view(-1))
