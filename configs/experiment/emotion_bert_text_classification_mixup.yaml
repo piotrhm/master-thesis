@@ -23,8 +23,7 @@ trainer:
 
 
 model:
-  alpha: 0.2
-  interpolate_loss: True
+  alpha: 1.0
   num_labels: 6
   optimizer:
     lr: 8e-5

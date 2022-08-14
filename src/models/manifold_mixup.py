@@ -26,7 +26,6 @@ class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
         self.metrics = {}
         self.criterion = CrossEntropyLoss()
 
-
     def training_step(self, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> torch.Tensor:
         batch_new = batch.copy()
         if self.pretrained_model_name_or_path == "distilbert-base-uncased":
@@ -46,6 +45,11 @@ class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
         loss = (1 - mixing) * self.criterion(y_hat.view(-1, self.model.num_labels), batch['labels'].view(-1)) +\
                mixing * self.criterion(y_hat.view(-1, self.model.num_labels), y_perm.view(-1))
 
+        logits = outputs.logits
+        preds = torch.argmax(logits, dim=1)
+
+        metric_dict = self.compute_metrics(preds, batch["labels"], mode="train")
+        self.log_dict(metric_dict, prog_bar=True, on_step=False, on_epoch=True)
         self.log("train_loss", loss)
         return loss
 

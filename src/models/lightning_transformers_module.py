@@ -1,5 +1,6 @@
 import hydra
 import transformers
+import torch
 
 from typing import TYPE_CHECKING, Type, Any
 from lightning_transformers.task.nlp.text_classification import TextClassificationTransformer
@@ -20,6 +21,17 @@ class TextClassificationTransformerWrapper(TextClassificationTransformer):
         )
         self.save_hyperparameters(logger=False)
         self.metrics = {}
+
+    def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
+        outputs = self.model(**batch)
+        loss = outputs[0]
+        logits = outputs.logits
+        preds = torch.argmax(logits, dim=1)
+
+        metric_dict = self.compute_metrics(preds, batch["labels"], mode="train")
+        self.log_dict(metric_dict, prog_bar=True, on_step=False, on_epoch=True)
+        self.log("train_loss", loss)
+        return loss
 
     def configure_optimizers(self):
         """
