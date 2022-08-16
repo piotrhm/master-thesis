@@ -19,12 +19,13 @@ trainer:
   min_epochs: 10
   max_epochs: 100000
   limit_train_batches: 0.2
-  gpus: -1
+  gpus: 0
 
 
 model:
   alpha: 1.0
   num_labels: 6
+  mode: 'last_layer'
   optimizer:
     lr: 8e-5
 

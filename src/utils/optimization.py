@@ -10,6 +10,7 @@ def get_constant_with_exponential_lr(
 ):
     if milestones is None:
         milestones = [2]
+
     scheduler1 = ConstantLR(optimizer, factor=factor, total_iters=total_iters_first)
     scheduler2 = ExponentialLR(optimizer, gamma=gamma)
 
