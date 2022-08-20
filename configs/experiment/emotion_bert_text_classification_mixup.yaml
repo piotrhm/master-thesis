@@ -21,6 +21,9 @@ trainer:
   limit_train_batches: 0.2
   gpus: 0
 
+callbacks:
+  early_stopping:
+    patience: 30
 
 model:
   alpha: 1.0
@@ -28,6 +31,14 @@ model:
   mode: 'last_layer'
   optimizer:
     lr: 8e-5
+    weight_decay: 0.01
+
+  lr_scheduler:
+    _target_: src.utils.optimization.get_constant_with_exponential_lr
+    gamma: 0.9
+    total_iters_first: 18
+    factor: 1.0
+    milestones: [10]
 
 datamodule:
   batch_size: 16
