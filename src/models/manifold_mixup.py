@@ -2,6 +2,7 @@ import hydra
 import transformers
 
 import torch
+import numpy as np
 from torch import nn
 
 import composer.functional as cf
@@ -9,6 +10,24 @@ import composer.functional as cf
 from typing import Any, Optional
 from lightning_transformers.task.nlp.text_classification import TextClassificationTransformer
 from torch.nn import CrossEntropyLoss
+
+
+def _gen_mixing_coef(alpha: float) -> float:
+    """Samples ``max(z, 1-z), z ~ Beta(alpha, alpha)``."""
+    # First check if alpha is positive.
+    assert alpha >= 0
+    # Draw the mixing parameter from a beta distribution.
+    # Check here is needed because beta distribution requires alpha > 0
+    # but alpha = 0 is fine for mixup.
+    if alpha == 0:
+        mixing_lambda = 0
+    else:
+        mixing_lambda = np.random.beta(alpha, alpha)
+    # for symmetric beta distribution, can always use 0 <= lambda <= .5;
+    # this way the "main" label is always the original one, which keeps
+    # the training accuracy meaningful
+    return min(mixing_lambda, 1. - mixing_lambda)
+
 
 
 class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
@@ -200,22 +219,16 @@ class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
         if self.pretrained_model_name_or_path == "distilbert-base-uncased":
             permuted_idx = torch.randperm(batch['input_ids'].shape[0])
             x_permuted = batch['input_ids'][permuted_idx]
-            batch_perm = batch.copy()
-            batch_perm['input_ids'] = x_permuted
-
-            x, y_perm, mixing = cf.mixup_batch(
-                input=batch['input_ids'],
-                target=batch['labels'],
-                alpha=self.hparams.alpha,
-                indices=permuted_idx,
-            )
+            y_perm = batch['labels'][permuted_idx]
+            mixing = _gen_mixing_coef(self.hparams.alpha)
         else:
             raise NotImplementedError("training step is not implemented for model")
 
         assert self.model.config.problem_type == self.model.config.problem_type
 
         output_1 = self.forward_without_classifier(**batch)
-        output_2 = self.forward_without_classifier(**batch_perm)
+        batch['input_ids'] = x_permuted
+        output_2 = self.forward_without_classifier(**batch)
         output = (1 - mixing) * output_1 + mixing * output_2
 
         y_hat = self.model.classifier(output)  # (bs, num_labels) | logits
