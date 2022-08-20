@@ -227,6 +227,8 @@ class TextClassificationTransformerWrapperMixup(TextClassificationTransformer):
         assert self.model.config.problem_type == self.model.config.problem_type
 
         output_1 = self.forward_without_classifier(**batch)
+        batch.pop('input_ids', None)
+
         batch['input_ids'] = x_permuted
         output_2 = self.forward_without_classifier(**batch)
         output = (1 - mixing) * output_1 + mixing * output_2
