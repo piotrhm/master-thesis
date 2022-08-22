@@ -96,6 +96,8 @@ class TrackRobustness(Callback):
                 accuracy = Accuracy()
                 cdata = trainer.datamodule.ctest_subset_dataloader(cname)
                 for batch in cdata:
+                    batch[0].to(device=pl_module.device)
+                    batch[1].to(device=pl_module.device)
                     loss, preds, targets = pl_module.step(batch.to(device=pl_module.device))
                     acc = accuracy(preds, targets)
                     pl_module.log("cdata/" + cname + "_loss", loss, on_step=False, on_epoch=True, prog_bar=False)
