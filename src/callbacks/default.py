@@ -86,6 +86,17 @@ class TrackCleanGradientsTransformer(Callback):
 
 
 class TrackRobustness(Callback):
+    def __init__(self):
+        super().__init__()
+        self.ready = True
+
+    def on_sanity_check_start(self, trainer, pl_module):
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
     def on_validation_epoch_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
         data_dir = trainer.datamodule.hparams.data_dir
 
