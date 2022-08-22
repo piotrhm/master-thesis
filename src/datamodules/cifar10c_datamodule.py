@@ -53,7 +53,7 @@ class CIFAR10CDataModule(CIFAR10DataModule, ABC):
             dataset = CIFAR10C(
                 cdata_path,
                 cname,
-                transform=self.transform_test,
+                transform=self.transform,
                 target_transform=None
             )
             self.cdata[cname] = dataset

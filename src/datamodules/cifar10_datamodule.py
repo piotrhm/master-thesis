@@ -74,7 +74,7 @@ class CIFAR10DataModule(DataModule, ABC):
         if not self.data_train and not self.data_val and not self.data_test:
             self.data_train = CIFAR10(self.hparams.data_dir, train=True, transform=self.transform_train)
             dataset = CIFAR10(self.hparams.data_dir, train=False, transform=self.transform)
-            self.data_train, self.data_val, self.data_test = random_split(
+            self.data_val, self.data_test = random_split(
                 dataset=dataset,
                 lengths=self.hparams.val_test_split,
                 generator=torch.Generator().manual_seed(42),
