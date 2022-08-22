@@ -21,14 +21,14 @@ class CIFAR10CDataModule(CIFAR10DataModule, ABC):
     def __init__(
         self,
         data_dir: str = "data/",
-        train_val_test_split: Tuple[int, int, int] = (50_000, 5_000, 5_000),
+        val_test_split: Tuple[int, int, int] = (5_000, 5_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
     ):
         super().__init__(
             data_dir=data_dir,
-            train_val_test_split=train_val_test_split,
+            val_test_split=val_test_split,
             batch_size=batch_size,
             num_workers=num_workers,
             pin_memory=pin_memory,

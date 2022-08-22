@@ -12,6 +12,7 @@ seed: 12345
 trainer:
   min_epochs: 200
   max_epochs: 200
+  gpu: -1
 
 datamodule:
   batch_size: 128
