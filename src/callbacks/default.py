@@ -99,6 +99,6 @@ class TrackRobustness(Callback):
                     batch[0] = batch[0].to(device=pl_module.device)
                     batch[1] = batch[1].to(device=pl_module.device)
                     loss, preds, targets = pl_module.step(batch)
-                    acc = accuracy(preds, targets)
+                    acc = accuracy(preds.detach().cpu(), targets.detach().cpu())
                     pl_module.log("cdata/" + cname + "_loss", loss, on_step=False, on_epoch=True, prog_bar=False)
                     pl_module.log("cdata/" + cname + "_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
