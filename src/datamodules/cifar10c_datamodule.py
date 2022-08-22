@@ -21,7 +21,7 @@ class CIFAR10CDataModule(CIFAR10DataModule, ABC):
     def __init__(
         self,
         data_dir: str = "data/",
-        val_test_split: Tuple[int, int, int] = (5_000, 5_000),
+        val_test_split: Tuple[int, int] = (5_000, 5_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
