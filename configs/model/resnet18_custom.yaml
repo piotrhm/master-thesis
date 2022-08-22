@@ -7,7 +7,7 @@ net:
 
 optimizer:
   _partial_: true
-  _target_: torch.optim.Adam
+  _target_: torch.optim.SGD
   lr: 0.1
   weight_decay: 0.0001
 

@@ -1,0 +1,33 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: cifar10c.yaml
+  - override /model: resnet18_custom.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
+  - override /trainer: default.yaml
+
+seed: 12345
+
+trainer:
+  min_epochs: 200
+  max_epochs: 200
+
+datamodule:
+  batch_size: 128
+
+model:
+  optimizer:
+    lr: 0.01
+    momentum: 0.9
+    weight_decay: 1e-4
+
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.MultiStepLR
+    milestones: [100, 150]
+    last_epoch: -1
+
+logger:
+  wandb:
+    tags: ["resnet18", "${name}", ]
+    project: "final"
