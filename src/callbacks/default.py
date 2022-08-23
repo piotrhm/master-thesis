@@ -102,3 +102,20 @@ class TrackRobustness(Callback):
                     acc = accuracy(preds.detach().cpu(), targets.detach().cpu())
                     pl_module.log("cdata/" + cname + "_loss", loss, on_step=False, on_epoch=True, prog_bar=False)
                     pl_module.log("cdata/" + cname + "_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+    def on_test_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
+        data_dir = trainer.datamodule.hparams.data_dir
+
+        cdata_path = os.path.join(data_dir, 'cifar-10-c')
+        corruptions = load_txt(os.path.join(cdata_path, 'corruptions.txt'))
+        with torch.enable_grad():
+            for cname in corruptions:
+                accuracy = Accuracy()
+                cdata = trainer.datamodule.ctest_subset_dataloader(cname)
+                for batch in cdata:
+                    batch[0] = batch[0].to(device=pl_module.device)
+                    batch[1] = batch[1].to(device=pl_module.device)
+                    loss, preds, targets = pl_module.step(batch)
+                    acc = accuracy(preds.detach().cpu(), targets.detach().cpu())
+                    pl_module.log("cdata_test/" + cname + "_loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+                    pl_module.log("cdata_test/" + cname + "_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
