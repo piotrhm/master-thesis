@@ -33,4 +33,4 @@ model:
 logger:
   wandb:
     tags: ["resnet18", "${name}", ]
-    project: "resnet18-tests"
+    project: "final"
