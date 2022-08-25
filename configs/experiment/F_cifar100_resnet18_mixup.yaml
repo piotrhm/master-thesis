@@ -2,7 +2,7 @@
 
 defaults:
   - override /datamodule: cifar100.yaml
-  - override /model: resnet18_custom.yaml
+  - override /model: resnet18_custom_mixup.yaml
   - override /callbacks: default.yaml
   - override /logger: null
   - override /trainer: default.yaml
@@ -18,6 +18,8 @@ datamodule:
   batch_size: 128
 
 model:
+  alpha: 0.1
+
   net:
     num_classes: 100
 
