@@ -3,7 +3,7 @@
 defaults:
   - override /datamodule: cifar100.yaml
   - override /model: resnet18_custom.yaml
-  - override /callbacks: wandb.yaml
+  - override /callbacks: wandb_c100.yaml
   - override /logger: null
   - override /trainer: default.yaml
 
