@@ -25,7 +25,6 @@ class CIFAR100DataModule(DataModule, ABC):
     ):
         super().__init__(
             data_dir=data_dir,
-            val_test_split=val_test_split,
             batch_size=batch_size,
             num_workers=num_workers,
             pin_memory=pin_memory,
