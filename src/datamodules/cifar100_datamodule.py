@@ -18,14 +18,14 @@ class CIFAR100DataModule(DataModule, ABC):
     def __init__(
         self,
         data_dir: str = "data/",
-        train_val_test_split: Tuple[int, int, int] = (50_000, 5_000, 5_000),
+        val_test_split: Tuple[int, int] = (5_000, 5_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
     ):
         super().__init__(
             data_dir=data_dir,
-            train_val_test_split=train_val_test_split,
+            val_test_split=val_test_split,
             batch_size=batch_size,
             num_workers=num_workers,
             pin_memory=pin_memory,
@@ -35,7 +35,7 @@ class CIFAR100DataModule(DataModule, ABC):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.transform_test = transforms.Compose([
+        self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5071, 0.4865, 0.4409),
                                  (0.2673, 0.2564, 0.2762)),
@@ -69,13 +69,11 @@ class CIFAR100DataModule(DataModule, ABC):
         differentiate whether it's called before trainer.fit()` or `trainer.test()`.
         """
 
-        # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
-            trainset = CIFAR100(self.hparams.data_dir, train=True, transform=self.transform_train)
-            testset = CIFAR100(self.hparams.data_dir, train=False, transform=self.transform_test)
-            dataset = ConcatDataset(datasets=[trainset, testset])
-            self.data_train, self.data_val, self.data_test = random_split(
+            self.data_train = CIFAR100(self.hparams.data_dir, train=True, transform=self.transform_train)
+            dataset = CIFAR100(self.hparams.data_dir, train=False, transform=self.transform)
+            self.data_val, self.data_test = random_split(
                 dataset=dataset,
-                lengths=self.hparams.train_val_test_split,
+                lengths=self.hparams.val_test_split,
                 generator=torch.Generator().manual_seed(42),
             )
