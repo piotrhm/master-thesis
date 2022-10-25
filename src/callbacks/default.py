@@ -2,6 +2,8 @@ import os
 from typing import Any, Optional, Dict
 
 import torch
+import uuid
+import pandas as pd
 
 from pytorch_lightning import Callback, Trainer, LightningModule
 from torchmetrics.classification.accuracy import Accuracy
@@ -119,3 +121,41 @@ class TrackRobustness(Callback):
                     acc = accuracy(preds.detach().cpu(), targets.detach().cpu())
                     pl_module.log("cdata_test/" + cname + "_loss", loss, on_step=False, on_epoch=True, prog_bar=False)
                     pl_module.log("cdata_test/" + cname + "_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+
+class GenerateEH(Callback):
+    def __init__(self):
+        super(GenerateEH, self).__init__()
+        self.file_suffix = f'{str(uuid.uuid4())[:5]}.csv'
+        self.ready = False
+    
+    def on_validation_epoch_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
+        data_dir = trainer.datamodule.hparams.data_dir
+
+        with torch.enable_grad():
+            data = trainer.datamodule.train_set_subset_dataloader()
+            accuracy = Accuracy()
+            prediction, targets = [], []
+            for batch in data:
+                batch[0] = batch[0].to(device=pl_module.device)
+                batch[1] = batch[1].to(device=pl_module.device)
+
+                loss, pred, target = pl_module.step(batch)
+
+                prediction.extend(pred.detach().cpu())
+                targets.extend(target.detach().cpu())
+
+                acc = accuracy(pred.detach().cpu(), target.detach().cpu())
+                pl_module.log("data_eh/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+                pl_module.log("data_eh/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+            if not self.ready:
+                df = pd.DataFrame(targets)
+                df.to_csv(os.path.join(data_dir, self.file_suffix), header=False, index=False)
+                self.ready = True
+
+            df = pd.read_csv(os.path.join(data_dir, self.file_suffix), header=None)
+            df_tmp = pd.DataFrame(prediction)
+            df = pd.concat([df, df_tmp], axis=1)
+            df.to_csv(os.path.join(data_dir, self.file_suffix), header=False, index=False)
+

@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 
 import torch
 
-from torch.utils.data import ConcatDataset, random_split
+from torch.utils.data import random_split, DataLoader, Dataset
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import transforms
 
@@ -29,6 +29,7 @@ class CIFAR10DataModule(DataModule, ABC):
             num_workers=num_workers,
             pin_memory=pin_memory,
         )
+        self.data_train_subset: Optional[Dataset] = None
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
@@ -79,3 +80,19 @@ class CIFAR10DataModule(DataModule, ABC):
                 lengths=self.hparams.val_test_split,
                 generator=torch.Generator().manual_seed(42),
             )
+
+        if not self.data_train_subset:
+            self.data_train_subset, _ = random_split(
+                dataset=CIFAR10(self.hparams.data_dir, train=True, transform=self.transform_train),
+                lengths=[1024, 48976],
+                generator=torch.Generator().manual_seed(42),
+            )
+
+    def train_set_subset_dataloader(self):
+        return DataLoader(
+            dataset=self.data_train_subset,
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+        )

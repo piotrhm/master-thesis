@@ -3,13 +3,14 @@
 defaults:
   - override /datamodule: cifar10c.yaml
   - override /model: resnet18_custom.yaml
-  - override /callbacks: wandb.yaml
+  - override /callbacks: wandb_cifar10C.yaml
   - override /logger: null
   - override /trainer: default.yaml
 
 seed: 12345
 
 trainer:
+  limit_train_batches: 10
   min_epochs: 200
   max_epochs: 200
   gpus: 0
