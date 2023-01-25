@@ -2,12 +2,12 @@
 
 defaults:
   - override /datamodule: cifar10.yaml
-  - override /model: resnet18_custom.yaml
+  - override /model: resnet18_custom_mixup.yaml
   - override /callbacks: wandb_cifar10C.yaml
   - override /logger: null
   - override /trainer: default.yaml
 
-seed: 12345678
+seed: 369369
 
 trainer:
   min_epochs: 200
@@ -18,8 +18,10 @@ datamodule:
   batch_size: 128
 
 model:
+  alpha: 0.1
+
   optimizer:
-    lr: 0.2
+    lr: 0.04
     momentum: 0.9
     weight_decay: 5e-4
 

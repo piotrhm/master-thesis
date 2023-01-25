@@ -39,7 +39,7 @@ model:
     milestones: [10]
 
 datamodule:
-  batch_size: 16
+    batch_size: 32
 
 logger:
   project: "bert-nlp"

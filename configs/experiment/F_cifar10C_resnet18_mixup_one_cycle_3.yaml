@@ -1,13 +1,13 @@
 # @package _global_
 
 defaults:
-  - override /datamodule: cifar100.yaml
-  - override /model: resnet18_mixup.yaml
-  - override /callbacks: wandb_c100.yaml
+  - override /datamodule: cifar10.yaml
+  - override /model: resnet18_custom_mixup.yaml
+  - override /callbacks: wandb_cifar10C.yaml
   - override /logger: null
   - override /trainer: default.yaml
 
-seed: 12345
+seed: 8989898
 
 trainer:
   min_epochs: 200
@@ -18,18 +18,16 @@ datamodule:
   batch_size: 128
 
 model:
-  alpha: 0.1
-
-  net:
-    num_classes: 100
+  alpha: 0.2
 
   optimizer:
-    lr: 0.002
+    lr: 0.2
+    momentum: 0.9
     weight_decay: 5e-4
 
   lr_scheduler:
     _target_: torch.optim.lr_scheduler.OneCycleLR
-    max_lr: 0.002
+    max_lr: 0.2
     epochs: 200
     steps_per_epoch: 391
 

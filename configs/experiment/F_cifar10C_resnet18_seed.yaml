@@ -7,7 +7,7 @@ defaults:
   - override /logger: null
   - override /trainer: default.yaml
 
-seed: 12345678
+seed: 369369
 
 trainer:
   min_epochs: 200
@@ -19,7 +19,7 @@ datamodule:
 
 model:
   optimizer:
-    lr: 0.2
+    lr: 0.04
     momentum: 0.9
     weight_decay: 5e-4
 

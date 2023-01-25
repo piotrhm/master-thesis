@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 
 import torch
 
-from torch.utils.data import ConcatDataset, random_split
+from torch.utils.data import DataLoader, random_split, Dataset
 from torchvision.datasets import CIFAR100
 from torchvision.transforms import transforms
 
@@ -29,6 +29,7 @@ class CIFAR100DataModule(DataModule, ABC):
             num_workers=num_workers,
             pin_memory=pin_memory,
         )
+        self.data_train_subset: Optional[Dataset] = None
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
@@ -52,7 +53,8 @@ class CIFAR100DataModule(DataModule, ABC):
         return 100
 
     def prepare_data(self):
-        """Download data if needed.
+        """
+        Download data if needed.
 
         This method is called only from a single GPU.
         Do not use it to assign state (self.x = y).
@@ -61,7 +63,8 @@ class CIFAR100DataModule(DataModule, ABC):
         CIFAR100(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
-        """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
+        """
+        Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
 
         This method is called by lightning when doing `trainer.fit()` and `trainer.test()`,
         so be careful not to execute the random split twice! The `stage` can be used to
@@ -76,3 +79,19 @@ class CIFAR100DataModule(DataModule, ABC):
                 lengths=self.hparams.val_test_split,
                 generator=torch.Generator().manual_seed(42),
             )
+
+        if not self.data_train_subset:
+            self.data_train_subset, _ = random_split(
+                dataset=CIFAR100(self.hparams.data_dir, train=True, transform=self.transform_train),
+                lengths=[1024, 48976],
+                generator=torch.Generator().manual_seed(42),
+            )
+
+    def train_set_subset_dataloader(self):
+        return DataLoader(
+            dataset=self.data_train_subset,
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+        )

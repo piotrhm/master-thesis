@@ -2,7 +2,7 @@
 
 defaults:
   - override /datamodule: cifar100.yaml
-  - override /model: resnet18_custom.yaml
+  - override /model: resnet18.yaml
   - override /callbacks: wandb_c100.yaml
   - override /logger: null
   - override /trainer: default.yaml
@@ -10,8 +10,8 @@ defaults:
 seed: 12345
 
 trainer:
-  min_epochs: 250
-  max_epochs: 250
+  min_epochs: 200
+  max_epochs: 200
   gpus: -1
 
 datamodule:
@@ -22,17 +22,17 @@ model:
     num_classes: 100
 
   optimizer:
-    lr: 0.1
-    momentum: 0.9
+    lr: 0.002
     weight_decay: 5e-4
 
   lr_scheduler:
-    _target_: torch.optim.lr_scheduler.MultiStepLR
-    milestones: [ 60, 120, 160 ]
-    gamma: 0.2
-    last_epoch: -1
+    _target_: torch.optim.lr_scheduler.OneCycleLR
+    max_lr: 0.002
+    epochs: 200
+    steps_per_epoch: 391
 
 logger:
   wandb:
     tags: ["resnet18", "${name}", ]
-    project: "final"
+    project: "master-thesis"
+    entity: "piotrhm"

@@ -27,3 +27,6 @@ defaults:
 
 track_gradients:
   _target_: src.callbacks.default.TrackCleanGradients
+
+generate_EH:
+  _target_: src.callbacks.default.GenerateEH

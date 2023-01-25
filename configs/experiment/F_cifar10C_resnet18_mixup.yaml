@@ -1,27 +1,27 @@
 # @package _global_
 
 defaults:
-  - override /datamodule: cifar10c.yaml
+  - override /datamodule: cifar10.yaml
   - override /model: resnet18_custom_mixup.yaml
-  - override /callbacks: wandb.yaml
+  - override /callbacks: wandb_cifar10C.yaml
   - override /logger: null
   - override /trainer: default.yaml
 
-seed: 12345
+seed: 12345678
 
 trainer:
   min_epochs: 200
   max_epochs: 200
-  gpus: 0
+  gpus: -1
 
 datamodule:
   batch_size: 128
 
 model:
-  alpha: 0.1
+  alpha: 0.2
 
   optimizer:
-    lr: 0.02
+    lr: 0.2
     momentum: 0.9
     weight_decay: 5e-4
 
