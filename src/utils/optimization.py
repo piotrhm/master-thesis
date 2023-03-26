@@ -1,5 +1,5 @@
 from torch.optim.lr_scheduler import ConstantLR, ExponentialLR, SequentialLR
-
+from transformers.optimization import get_constant_schedule_with_warmup
 
 def get_constant_with_exponential_lr(
     optimizer,
@@ -15,3 +15,10 @@ def get_constant_with_exponential_lr(
     scheduler2 = ExponentialLR(optimizer, gamma=gamma)
 
     return SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=milestones)
+
+
+def transformers_get_constant_schedule_with_warmup(
+    optimizer,
+    num_warmup_steps,
+):
+    return get_constant_schedule_with_warmup(optimizer, num_warmup_steps)

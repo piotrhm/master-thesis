@@ -16,35 +16,34 @@ name: "bert_text_classification"
 seed: 12345
 
 trainer:
-  min_epochs: 10
-  max_epochs: 100000
-  limit_train_batches: 0.2
+  min_epochs: 1
+  max_epochs: 8
+  limit_train_batches: 1.0
   gpus: -1
 
 callbacks:
   early_stopping:
-    patience: 30
+    patience: 4
 
 model:
-  alpha: 0.2
+  alpha: 0.5
   num_labels: 6
-  mode: 'embedding'
+  mode: 'embedding'  
   optimizer:
-    lr: 8e-5
-    weight_decay: 0.01
+    _target_: torch.optim.AdamW
+    lr: 2e-5
+    eps: 1e-8
 
   lr_scheduler:
-    _target_: src.utils.optimization.get_constant_with_exponential_lr
-    gamma: 0.9
-    total_iters_first: 18
-    factor: 1.0
-    milestones: [10]
-
+    _target_: src.utils.optimization.transformers_get_constant_schedule_with_warmup
+    num_warmup_steps: 0
+    
 datamodule:
-  batch_size: 32
+  batch_size: 64
 
 logger:
-  project: "bert-nlp"
   wandb:
-    tags: ["bert", "${name}"]
-    project: "bert-nlp"
+    tags: ["bert", "${name}", ]
+    project: "master-thesis"
+    entity: "piotrhm"
+    name: "bert_base_emontions_mixup_embedding"

@@ -7,6 +7,6 @@ class TextClassificationDataModuleWrapper(TextClassificationDataModule):
 
     def __init__(self, tokenizer_pretrained_model_name_or_path, *args, **kwargs) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_pretrained_model_name_or_path)
-
-        super().__init__(self.tokenizer, *args, **kwargs)
+        
+        super(TextClassificationDataModule, self).__init__(self.tokenizer, *args, **kwargs)
         self.labels = None

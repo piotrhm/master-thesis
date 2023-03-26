@@ -10,8 +10,8 @@ defaults:
 seed: 12345678
 
 trainer:
-  min_epochs: 200
-  max_epochs: 200
+  min_epochs: 260
+  max_epochs: 260
   gpus: -1
 
 datamodule:
@@ -19,16 +19,18 @@ datamodule:
 
 model:
   optimizer:
-    lr: 0.2
+    lr: 0.1
     momentum: 0.9
-    weight_decay: 5e-4
+    weight_decay: 1e-4
 
   lr_scheduler:
     _target_: torch.optim.lr_scheduler.MultiStepLR
-    milestones: [100, 150]
+    milestones: [90, 175]
     last_epoch: -1
 
 logger:
   wandb:
     tags: ["resnet18", "${name}", ]
-    project: "final"
+    project: "master-thesis"
+    entity: "piotrhm"
+    name: "resnet18_cifar_10C"
