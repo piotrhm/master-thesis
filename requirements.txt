@@ -1,5 +1,5 @@
 # --------- pytorch --------- #
-torch>=1.10.0
+torch==1.12.1
 torchvision>=0.11.0
 #lightning-bolts==0.6.0.post1
 #lightning-lite==1.8.0
@@ -43,3 +43,4 @@ Pillow~=9.0.1
 matplotlib~=3.5.2
 seaborn~=0.11.2
 scikit-learn~=1.0.2
+datasets==2.11.0

@@ -9,3 +9,6 @@ early_stopping:
 
 track_gradients:
   _target_: src.callbacks.default.TrackCleanGradientsTransformer
+  
+generate_EH:
+  _target_: src.callbacks.default.GenerateEH_transformer

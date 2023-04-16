@@ -19,7 +19,7 @@ datamodule:
   batch_size: 128
 
 model:
-  alpha: 0.1
+  alpha: 0.2
 
   net:
     num_classes: 100

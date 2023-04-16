@@ -162,4 +162,52 @@ class GenerateEH(Callback):
             df_tmp = pd.DataFrame(prediction)
             df = pd.concat([df, df_tmp], axis=1)
             df.to_csv(os.path.join(data_dir, self.file_suffix), header=False, index=False)
+            
+            
+class GenerateEH_transformer(Callback):
+    def __init__(self):
+        super(GenerateEH_transformer, self).__init__()
+        self.ready = False
+        self.file_suffix = None
+    
+    def on_validation_epoch_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
+        if self.file_suffix is None:
+            time_stamp = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
+            self.file_suffix = f'{trainer.logger._name}_{time_stamp}.csv'
+
+        data_dir = trainer.datamodule.hparams.data_dir
+        with torch.enable_grad():
+            data = trainer.datamodule.train_set_subset_dataloader()
+            accuracy = Accuracy()
+            prediction, targets = [], []
+            
+            for batch in data:                
+                for key, value in batch.items():
+                    batch[key] = batch[key].to(device=pl_module.device)
+
+                outputs = pl_module.model(**batch)
+                loss = outputs.loss
+                logits = outputs.logits
+                pred = torch.argmax(logits, dim=1)
+                target = batch["labels"]
+
+                prediction.extend(pred.detach().cpu())
+                targets.extend(target.detach().cpu())
+
+                acc = accuracy(pred.detach().cpu(), target.detach().cpu())
+                pl_module.log("data_eh/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+                pl_module.log("data_eh/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+            if not self.ready:
+                path_data_dir = os.path.join(os.getcwd(), data_dir)
+                os.mkdir(path_data_dir)
+                
+                df = pd.DataFrame(targets)
+                df.to_csv(os.path.join(data_dir, self.file_suffix), header=False, index=False)
+                self.ready = True
+
+            df = pd.read_csv(os.path.join(data_dir, self.file_suffix), header=None)
+            df_tmp = pd.DataFrame(prediction)
+            df = pd.concat([df, df_tmp], axis=1)
+            df.to_csv(os.path.join(data_dir, self.file_suffix), header=False, index=False)
 
