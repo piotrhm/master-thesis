@@ -1,0 +1,44 @@
+# @package _global_
+
+defaults:
+  - override /datamodule: cifar100.yaml
+  - override /model: resnet_4_custom_mixup.yaml
+  - override /callbacks: wandb_resnet_cifar100.yaml
+  - override /logger: null
+  - override /trainer: default.yaml
+
+name: "cifar_100_resnet_mixup"
+seed: 12345
+
+trainer:
+  min_epochs: 300
+  max_epochs: 300
+  gpus: -1
+
+datamodule:
+  batch_size: 128
+
+model:
+  alpha: 0.1
+
+  net:
+    num_classes: 100
+
+  optimizer:
+    _target_: torch.optim.SGD
+    lr: 0.1
+    weight_decay: 5e-4
+    momentum: 0.9
+
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.MultiStepLR
+    milestones: [100, 150, 225]
+    gamma: 0.2
+    last_epoch: -1
+
+logger:
+  wandb:
+    tags: ["resnet", "${name}", "mixup"]
+    project: "master-thesis"
+    entity: "piotrhm"
+    name: "cifar_100_resnet_mixup"

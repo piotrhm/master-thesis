@@ -2,11 +2,12 @@
 
 defaults:
   - override /datamodule: cifar10.yaml
-  - override /model: resnet18_custom_mixup.yaml
-  - override /callbacks: wandb_cifar10C.yaml
+  - override /model: resnet_3_custom_mixup.yaml
+  - override /callbacks: wandb_resnet_cifar10C.yaml
   - override /logger: null
   - override /trainer: default.yaml
-
+  
+name: "cifar_10C_resnet_mixup"
 seed: 12345678
 
 trainer:
@@ -27,11 +28,10 @@ model:
   lr_scheduler:
     _target_: torch.optim.lr_scheduler.MultiStepLR
     milestones: [90, 175]
-    last_epoch: -1
 
 logger:
   wandb:
-    tags: ["resnet18", "${name}", ]
+    tags: ["resnet", "${name}", "mixup"]
     project: "master-thesis"
     entity: "piotrhm"
-    name: "resnet18_cifar_10C"
+    name: "cifar_10C_resnet_mixup"

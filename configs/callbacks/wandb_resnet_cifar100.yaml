@@ -4,5 +4,5 @@ defaults:
 track_gradients:
   _target_: src.callbacks.default.TrackCleanGradients
 
-track_robustness:
-  _target_: src.callbacks.default.TrackRobustness
+generate_EH:
+  _target_: src.callbacks.default.GenerateEH

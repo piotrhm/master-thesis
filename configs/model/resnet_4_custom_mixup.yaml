@@ -1,0 +1,19 @@
+_target_: src.models.mixup_module.MixUpModule
+alpha: 0.1
+
+net:
+  _target_: src.models.components.resnet.ResNet4
+  layers: [2, 3, 4, 4]
+  num_classes: 10
+
+optimizer:
+  _partial_: true
+  _target_: torch.optim.SGD
+  lr: 0.1
+  weight_decay: 0.0001
+
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+
+monitor:
+  metric_to_track: 'val/acc'

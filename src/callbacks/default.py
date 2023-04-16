@@ -5,6 +5,7 @@ import torch
 import uuid
 import pandas as pd
 
+from datetime import datetime
 from pytorch_lightning import Callback, Trainer, LightningModule
 from torchmetrics.classification.accuracy import Accuracy
 
@@ -126,12 +127,15 @@ class TrackRobustness(Callback):
 class GenerateEH(Callback):
     def __init__(self):
         super(GenerateEH, self).__init__()
-        self.file_suffix = f'{str(uuid.uuid4())[:5]}.csv'
         self.ready = False
+        self.file_suffix = None
     
     def on_validation_epoch_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
-        data_dir = trainer.datamodule.hparams.data_dir
+        if self.file_suffix is None:
+            time_stamp = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
+            self.file_suffix = f'{trainer.logger._name}_{time_stamp}.csv'
 
+        data_dir = trainer.datamodule.hparams.data_dir
         with torch.enable_grad():
             data = trainer.datamodule.train_set_subset_dataloader()
             accuracy = Accuracy()

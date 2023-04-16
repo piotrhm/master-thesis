@@ -11,7 +11,7 @@ defaults:
 # this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
-name: "bert_text_classification"
+name: "bert_base_emontions_mixup_embedding"
 
 seed: 12345
 

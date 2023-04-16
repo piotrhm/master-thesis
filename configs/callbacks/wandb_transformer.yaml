@@ -2,10 +2,10 @@ defaults:
   - default.yaml
 
 model_checkpoint:
-  monitor: "val_accuracy" # name of the logged metric which determines when model is improving
+  monitor: "val_accuracy"
 
 early_stopping:
-  monitor: "val_accuracy" # name of the logged metric which determines when model is improving
+  monitor: "val_accuracy"
 
 track_gradients:
   _target_: src.callbacks.default.TrackCleanGradientsTransformer
