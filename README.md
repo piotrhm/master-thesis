@@ -13,8 +13,13 @@
 </div>
 
 ## Description
+This repository contains the code necessary for reproducing the results from my master thesis: "Experimental comparison of regularization on learning dynamics in deep learning".
 
-TBD
+### Abstract
+mixup is a neural network training method that generates new samples by linear interpolation of multiple samples and their labels. In the image domain, the mixup method has a proven record of better generalization ability than the traditional Empirical Risk Minimization method (ERM). At the same time, we lack an intuitive understanding of why mixup is helping. In this work, we attempted to understand better the mixup phenomenon, particularly regarding its impact on the difficulty of decision-making by neural networks. First, we conduct a series of experiments to gather necessary knowledge about the nature of mixup. Next, we make a hypothesis that gives an in-depth understating of why mixup improves generalization.
+
+### Access
+To get access to the full PDF version of the thesis, please contact me at: piotr.helm.97@gmail.com
 
 ## How to run
 
